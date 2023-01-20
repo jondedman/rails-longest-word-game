@@ -1,17 +1,32 @@
-<h1>New game</h1>
+<h1 class="header">New game</h1>
 
 
 <p>What is the longest word you can find?</p>
-<p> <%= @letters %></p>
-
+<br>
+<br>
+<div class="container">
+  <div class="row">
+  <% @letters.each do |x| %>
+<div class="col-md-1">
+     <span> <%= x %> </span>
+    </div>
+    <% end %>
+</div>
+<br>
+<br>
+<%# <div class="submit"> %>
+<div class="center">
 <form action="/score" method="post" data-turbo="false">
 <label for="word"></label>
+<div class="input-group">
 <input type="text" name="word">
 <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 <%= hidden_field_tag :letters, @letters %>
-<input type="submit">
-
+<input type="submit" value="Play"></div>
 </form>
+</div>
+</div>
+
 
 <%# below is additional code from the first attempt at this challenge in vanilla Ruby %>
 <%# require 'open-uri'

@@ -25,6 +25,18 @@ class GamesController < ApplicationController
     end
   end
 
+  def is_a_word?
+    url = "https://wagon-dictionary.herokuapp.com/#{@word}"
+    dictionary = URI.open(url).read
+    valid = JSON.parse(dictionary)
+    if valid['found'] === true
+      "Congratulations your word '#{@word}' is valid and you score #{valid['length'] * 10} points!"
+    else
+      "Sorry your word '#{@word}' is not in the dictionary. Please try again"
+    end
+  end
+end
+
   # def is_word_in_grid
 
   # !@word_array.to_set.subset?(@letters.to_set) ? "You have used letters not in the grid" : "you may proceed to the next check"
@@ -65,15 +77,3 @@ class GamesController < ApplicationController
   # Instead of converting the array to set inside the ternary operator, we are storing it in separate variable for readability
   # The ternary operator is replaced with an if-else block which makes the code more readable.
   # This refactored version makes it clear what the code is doing, and it also makes it easier to test and maintain the code.
-
-  def is_a_word?
-    url = "https://wagon-dictionary.herokuapp.com/#{@word}"
-    dictionary = URI.open(url).read
-    valid = JSON.parse(dictionary)
-    if valid['found'] === true
-      "congratulations your word '#{@word}' is valid and you score #{valid['length'] * 10} points!"
-    else
-      "Sorry your word '#{@word}' is not in the dictionary. Please try again"
-    end
-  end
-end
