@@ -1,0 +1,94 @@
+<h1>New game</h1>
+
+
+<p>What is the longest word you can find?</p>
+<p> <%= @letters %></p>
+
+<form action="/score" method="post" data-turbo="false">
+<label for="word"></label>
+<input type="text" name="word">
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<%= hidden_field_tag :letters, @letters %>
+<input type="submit">
+
+</form>
+
+<%# below is additional code from the first attempt at this challenge in vanilla Ruby %>
+<%# require 'open-uri'
+require 'json'
+
+def generate_grid(grid_size)
+  grid = []
+  letters = [*("a".."z")]
+  counter = 0
+
+  until counter == grid_size
+    l = letters.sample(1)
+    grid << l
+    counter += 1
+  end
+  grid
+end
+
+# def calculate_score(duration, points, message)
+#   result = {
+#     time: duration,
+#     score: 0,
+#     message: ""
+#   }
+
+
+# end
+
+def run_game(attempt, grid, start_time, end_time)
+  # TODO: runs the game and return detailed hash of result (with `:score`, `:message` and `:time` keys)
+  grid = grid.join.downcase.chars
+  duration = end_time - start_time
+  result = {
+    time: duration,
+    score: 0,
+    message: ""
+  }
+  attempt_arry = attempt.scan(/\w/)
+
+  # the code below checks whether the attempt contains letters not in the grid (including duplicates)
+  word_is_not_in_grid = false
+  attempt_arry.each { |x|
+    if grid.include?(x)
+      i = grid.find_index(x)
+      grid.delete_at(i)
+    else
+      word_is_not_in_grid = true
+    end
+  }
+
+    if word_is_not_in_grid == true
+      points = 0
+      message = "not in the grid"
+      result[:time] = duration
+      result[:score] = points
+      result[:message] = message
+      result
+
+    else
+      url = "https://wagon-dictionary.herokuapp.com/#{attempt}"
+      dictionary = URI.open(url).read
+      check = JSON.parse(dictionary)
+      if check["found"] == true
+        time_points = duration / 10.0
+        points = check["length"]
+        message = "Well done!"
+        result[:time] = duration
+        result[:score] = 100*(points - time_points).round(2)
+        result[:message] = message
+        result
+      else
+        points = 0
+        message = "not an english word"
+        result[:time] = duration
+        result[:score] = points
+        result[:message] = message
+        result
+      end
+    end
+end %>
